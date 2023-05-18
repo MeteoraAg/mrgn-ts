@@ -1,7 +1,6 @@
 {
   "name": "@mercurial-finance/marginfi-client-v2",
   "version": "1.0.1",
-  "private": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
