@@ -123,8 +123,6 @@ export class MarginfiAccount {
       accountData
     );
 
-    require("debug")("mfi:margin-account")("Loaded marginfi account %s", _marginfiAccountPk);
-
     return marginfiAccount;
   }
 
@@ -221,13 +219,9 @@ export class MarginfiAccount {
    * @returns Transaction signature
    */
   async deposit(amount: Amount, bank: Bank): Promise<string> {
-    const debug = require("debug")(`mfi:margin-account:${this.publicKey.toString()}:deposit`);
-
-    debug("Depositing %s %s into marginfi account", amount, bank.mint);
     const ixs = await this.makeDepositIx(amount, bank);
     const tx = new Transaction().add(...ixs.instructions);
     const sig = await this.client.processTransaction(tx, []);
-    debug("Depositing successful %s", sig);
     await this.reload();
     return sig;
   }
@@ -278,8 +272,6 @@ export class MarginfiAccount {
    * @returns Transaction signature
    */
   async repay(amount: Amount, bank: Bank, repayAll: boolean = false): Promise<string> {
-    const debug = require("debug")(`mfi:margin-account:${this.publicKey.toString()}:repay`);
-    debug("Repaying %s %s into marginfi account, repay all: %s", amount, bank.mint, repayAll);
     const ixs = await this.makeRepayIx(amount, bank, repayAll);
     const tx = new Transaction();
 
@@ -301,7 +293,6 @@ export class MarginfiAccount {
 
     tx.add(...ixs.instructions);
     const sig = await this.client.processTransaction(tx);
-    debug("Depositing successful %s", sig);
     await this.reload();
     return sig;
   }
@@ -349,8 +340,6 @@ export class MarginfiAccount {
    * @returns Transaction signature
    */
   async withdraw(amount: Amount, bank: Bank, withdrawAll: boolean = false): Promise<string> {
-    const debug = require("debug")(`mfi:margin-account:${this.publicKey.toString()}:withdraw`);
-    debug("Withdrawing %s from marginfi account", amount);
     const tx = new Transaction();
 
     if (withdrawAll && !bank.emissionsMint.equals(PublicKey.default)) {
@@ -385,7 +374,6 @@ export class MarginfiAccount {
     tx.add(...ixs.instructions);
 
     const sig = await this.client.processTransaction(tx);
-    debug("Withdrawing successful %s", sig);
     await this.reload();
     return sig;
   }
@@ -435,8 +423,6 @@ export class MarginfiAccount {
    * @returns Transaction signature
    */
   async borrow(amount: Amount, bank: Bank): Promise<string> {
-    const debug = require("debug")(`mfi:margin-account:${this.publicKey.toString()}:borrow`);
-    debug("Borrowing %s from marginfi account", amount);
     const tx = new Transaction();
 
     const userAta = await associatedAddress({
@@ -454,7 +440,6 @@ export class MarginfiAccount {
     const ixs = await this.makeBorrowIx(amount, bank);
     tx.add(...ixs.instructions);
     const sig = await this.client.processTransaction(tx);
-    debug("Withdrawing successful %s", sig);
     await this.reload();
     return sig;
   }
@@ -598,7 +583,6 @@ export class MarginfiAccount {
    * Update instance data by fetching and storing the latest on-chain state.
    */
   async reload() {
-    require("debug")(`mfi:margin-account:${this.publicKey.toBase58().toString()}:loader`)("Reloading account data");
     const [marginfiGroupAi, marginfiAccountAi] = await this._loadGroupAndAccountAi();
     const marginfiAccountData = MarginfiAccount.decode(marginfiAccountAi.data);
     if (!marginfiAccountData.group.equals(this._config.groupPk))
@@ -642,9 +626,6 @@ export class MarginfiAccount {
   }
 
   private async _loadGroupAndAccountAi(): Promise<AccountInfo<Buffer>[]> {
-    const debug = require("debug")(`mfi:margin-account:${this.publicKey.toString()}:loader`);
-    debug("Loading marginfi account %s, and group %s", this.publicKey, this._config.groupPk);
-
     let [marginfiGroupAi, marginfiAccountAi] = await this.client.provider.connection.getMultipleAccountsInfo(
       [this._config.groupPk, this.publicKey],
       DEFAULT_COMMITMENT
@@ -896,7 +877,6 @@ export class MarginfiAccount {
   // (1) the amount of liquidated collateral cannot be more than the balance,
   // (2) the amount of covered liablity cannot be more than existing liablity.
   public getMaxLiquidatableAssetAmount(assetBank: Bank, liabBank: Bank): BigNumber {
-    const debug = require("debug")("mfi:getMaxLiquidatableAssetAmount");
     const { assets, liabilities } = this.getHealthComponents(MarginRequirementType.Maint);
     const currentHealth = assets.minus(liabilities);
 
@@ -930,10 +910,6 @@ export class MarginfiAccount {
     // MAX asset amount bounded by availalbe liability amount
     const liabBalanceBound = liabBalance.times(priceLiabMarket).div(priceAssetMarket.times(liquidationDiscount));
 
-    debug("maxLiquidatableUnboundedAssetAmount", maxLiquidatableUnboundedAssetAmount.toFixed(6));
-    debug("assetBalanceBound", assetBalanceBound.toFixed(6));
-    debug("liabBalanceBound", liabBalanceBound.toFixed(6));
-
     return BigNumber.min(assetBalanceBound, liabBalanceBound, maxLiquidatableUnboundedAssetAmount);
   }
 
@@ -955,8 +931,6 @@ export class MarginfiAccount {
     ix: TransactionInstruction,
     amount: Amount = new BigNumber(0)
   ): Promise<TransactionInstruction[]> {
-    const debug = require("debug")("mfi:wrapInstructionForWSol");
-    debug("creating a wsol account, and minting %s wsol", amount);
     return [...(await this.makeWrapSolIxs(new BigNumber(amount))), ix, await this.makeUnwrapSolIx()];
   }
 
@@ -972,9 +946,7 @@ export class MarginfiAccount {
     ];
 
     if (amount.gt(0)) {
-      const debug = require("debug")("mfi:wrapInstructionForWSol");
       const nativeAmount = uiToNative(amount, 9).toNumber() + 10000;
-      debug("wrapping %s wsol", nativeAmount);
 
       ixs.push(
         SystemProgram.transfer({ fromPubkey: this.client.wallet.publicKey, toPubkey: address, lamports: nativeAmount }),

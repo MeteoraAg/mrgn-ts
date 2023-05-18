@@ -59,9 +59,6 @@ class MarginfiGroup {
    * @return MarginfiGroup instance
    */
   static async fetch(config: MarginfiConfig, program: MarginfiProgram, commitment?: Commitment) {
-    const debug = require("debug")(`mfi:margin-group`);
-    debug("Loading Marginfi Group %s", config.groupPk);
-
     const accountData = await MarginfiGroup._fetchAccountData(config, program, commitment);
 
     const bankAccountsData = await program.account.bank.all([

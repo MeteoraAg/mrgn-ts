@@ -37,15 +37,6 @@ class MarginfiClientReadonly {
    * @returns MarginfiClient instance
    */
   static async fetch(config: MarginfiConfig, connection: Connection, opts?: ConfirmOptions) {
-    const debug = require("debug")("mfi:client");
-    debug(
-      "Loading Marginfi Client\n\tprogram: %s\n\tenv: %s\n\tgroup: %s\n\turl: %s",
-      config.programId,
-      config.environment,
-      config.groupPk,
-      connection.rpcEndpoint
-    );
-
     const provider = new AnchorProvider(connection, {} as any, {
       ...AnchorProvider.defaultOptions(),
       commitment: connection.commitment ?? AnchorProvider.defaultOptions().commitment,
@@ -64,7 +55,6 @@ class MarginfiClientReadonly {
       marginfiGroup: Address;
     }>
   ): Promise<MarginfiClientReadonly> {
-    const debug = require("debug")("mfi:client");
     const env = overrides?.env ?? (process.env.MARGINFI_ENV! as Environment);
     const connection =
       overrides?.connection ??
@@ -75,9 +65,6 @@ class MarginfiClientReadonly {
     const groupPk =
       overrides?.marginfiGroup ??
       (process.env.MARGINFI_GROUP ? new PublicKey(process.env.MARGINFI_GROUP) : PublicKey.default);
-
-    debug("Loading the marginfi client from env vars");
-    debug("Env: %s\nProgram: %s\nGroup: %s", env, programId, groupPk);
 
     const config = await getConfig(env, {
       groupPk: translateAddress(groupPk),

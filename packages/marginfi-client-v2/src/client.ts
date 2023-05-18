@@ -66,14 +66,6 @@ class MarginfiClient {
    * @returns MarginfiClient instance
    */
   static async fetch(config: MarginfiConfig, wallet: Wallet, connection: Connection, opts?: ConfirmOptions) {
-    const debug = require("debug")("mfi:client");
-    debug(
-      "Loading Marginfi Client\n\tprogram: %s\n\tenv: %s\n\tgroup: %s\n\turl: %s",
-      config.programId,
-      config.environment,
-      config.groupPk,
-      connection.rpcEndpoint
-    );
     const provider = new AnchorProvider(connection, wallet, {
       ...AnchorProvider.defaultOptions(),
       commitment: connection.commitment ?? AnchorProvider.defaultOptions().commitment,
@@ -93,7 +85,6 @@ class MarginfiClient {
       wallet: Wallet;
     }>
   ): Promise<MarginfiClient> {
-    const debug = require("debug")("mfi:client");
     const env = overrides?.env ?? (process.env.MARGINFI_ENV! as Environment);
     const connection =
       overrides?.connection ??
@@ -111,9 +102,6 @@ class MarginfiClient {
           ? Keypair.fromSecretKey(new Uint8Array(JSON.parse(process.env.MARGINFI_WALLET_KEY)))
           : loadKeypair(process.env.MARGINFI_WALLET!)
       );
-
-    debug("Loading the marginfi client from env vars");
-    debug("Env: %s\nProgram: %s\nGroup: %s\nSigner: %s", env, programId, groupPk, wallet.publicKey);
 
     const config = await getConfig(env, {
       groupPk: translateAddress(groupPk),
@@ -146,10 +134,7 @@ class MarginfiClient {
    * @returns transaction instruction
    */
   async makeCreateMarginfiAccountIx(marginfiAccountKeypair?: Keypair): Promise<InstructionsWrapper> {
-    const dbg = require("debug")("mfi:client");
     const accountKeypair = marginfiAccountKeypair || Keypair.generate();
-
-    dbg("Generating marginfi account ix for %s", accountKeypair.publicKey);
 
     const initMarginfiAccountIx = await instructions.makeInitMarginfiAccountIx(this.program, {
       marginfiGroupPk: this._group.publicKey,
@@ -172,15 +157,11 @@ class MarginfiClient {
    * @returns MarginfiAccount instance
    */
   async createMarginfiAccount(opts?: TransactionOptions): Promise<MarginfiAccount> {
-    const dbg = require("debug")("mfi:client");
-
     const accountKeypair = Keypair.generate();
 
     const ixs = await this.makeCreateMarginfiAccountIx(accountKeypair);
     const tx = new Transaction().add(...ixs.instructions);
     const sig = await this.processTransaction(tx, ixs.keys, opts);
-
-    dbg("Created Marginfi account %s", sig);
 
     return opts?.dryRun
       ? Promise.resolve(undefined as unknown as MarginfiAccount)

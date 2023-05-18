@@ -104,8 +104,6 @@ class MarginfiAccountReadonly {
       accountData
     );
 
-    require("debug")("mfi:margin-account")("Loaded marginfi account %s", _marginfiAccountPk);
-
     return marginfiAccount;
   }
 
@@ -217,7 +215,6 @@ class MarginfiAccountReadonly {
    * Update instance data by fetching and storing the latest on-chain state.
    */
   async reload() {
-    require("debug")(`mfi:margin-account:${this.publicKey.toString()}:loader`)("Reloading account data");
     const [marginfiGroupAi, marginfiAccountAi] = await this.loadGroupAndAccountAi();
     const marginfiAccountData = MarginfiAccountReadonly.decode(marginfiAccountAi.data);
     if (!marginfiAccountData.group.equals(this._config.groupPk))
@@ -260,9 +257,6 @@ class MarginfiAccountReadonly {
   }
 
   private async loadGroupAndAccountAi(): Promise<AccountInfo<Buffer>[]> {
-    const debug = require("debug")(`mfi:margin-account:${this.publicKey.toString()}:loader`);
-    debug("Loading marginfi account %s, and group %s", this.publicKey, this._config.groupPk);
-
     let [marginfiGroupAi, marginfiAccountAi] = await this.client.provider.connection.getMultipleAccountsInfo(
       [this._config.groupPk, this.publicKey],
       DEFAULT_COMMITMENT
