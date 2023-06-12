@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 import { Marginfi } from "./idl/marginfi-types";
-import { Program } from "@mrgnlabs/mrgn-common";
+import { Program } from "@mercurial-finance/mrgn-common";
 
 export type MarginfiProgram = Program<Marginfi>;
 

@@ -1,6 +1,6 @@
 {
   "name": "@mercurial-finance/marginfi-client-v2",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.26.0",
-    "@mrgnlabs/mrgn-common": "*",
+    "@mercurial-finance/mrgn-common": "^1.0.1",
     "@project-serum/anchor": "^0.26.0",
     "@pythnetwork/client": "^2.9.0",
     "@solana/wallet-adapter-base": "^0.9.20",

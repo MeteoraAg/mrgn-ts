@@ -25,7 +25,7 @@ import {
   NodeWallet,
   TransactionOptions,
   Wallet,
-} from "@mrgnlabs/mrgn-common";
+} from "@mercurial-finance/mrgn-common";
 import { OraclePriceData, OracleSetup } from "./bank";
 import { parsePriceData } from "@pythnetwork/client";
 import { BigNumber } from "bignumber.js";

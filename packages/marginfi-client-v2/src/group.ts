@@ -4,7 +4,7 @@ import { Cluster, Commitment, PublicKey } from "@solana/web3.js";
 import { Bank, BankData, getOraclePriceData } from "./bank";
 import { MARGINFI_IDL } from "./idl";
 import { AccountType, MarginfiConfig, MarginfiProgram } from "./types";
-import { DEFAULT_COMMITMENT } from "@mrgnlabs/mrgn-common";
+import { DEFAULT_COMMITMENT } from "@mercurial-finance/mrgn-common";
 
 /**
  * Wrapper class around a specific marginfi group.

@@ -1,5 +1,5 @@
 import { Connection } from "@solana/web3.js";
-import { NodeWallet } from "@mrgnlabs/mrgn-common";
+import { NodeWallet } from "@mercurial-finance/mrgn-common";
 import { AccountType, getConfig, MarginfiClient } from "../src";
 import MarginfiAccount, { MarginRequirementType } from "../src/account";
 

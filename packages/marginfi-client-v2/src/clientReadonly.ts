@@ -7,7 +7,7 @@ import { getConfig } from "./config";
 import MarginfiGroup from "./group";
 import { MarginfiAccountData } from "./account";
 import MarginfiAccountReadonly from "./accountReadonly";
-import { DEFAULT_COMMITMENT } from "@mrgnlabs/mrgn-common";
+import { DEFAULT_COMMITMENT } from "@mercurial-finance/mrgn-common";
 
 /**
  * Entrypoint to interact with the marginfi contract.

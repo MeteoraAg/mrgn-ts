@@ -8,7 +8,7 @@ import MarginfiClientReadonly from "./clientReadonly";
 import MarginfiGroup from "./group";
 import { MARGINFI_IDL } from "./idl";
 import { AccountType, MarginfiConfig, MarginfiProgram } from "./types";
-import { DEFAULT_COMMITMENT, shortenAddress } from "@mrgnlabs/mrgn-common";
+import { DEFAULT_COMMITMENT, shortenAddress } from "@mercurial-finance/mrgn-common";
 
 /**
  * Wrapper class around a specific marginfi account.

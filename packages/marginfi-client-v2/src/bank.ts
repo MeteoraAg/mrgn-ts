@@ -4,7 +4,7 @@ import BN from "bn.js";
 import { MarginRequirementType } from "./account";
 import { PYTH_PRICE_CONF_INTERVALS, SWB_PRICE_CONF_INTERVALS } from "./constants";
 import { parsePriceData } from "@pythnetwork/client";
-import { getMint, nativeToUi, WrappedI80F48, wrappedI80F48toBigNumber } from "@mrgnlabs/mrgn-common";
+import { getMint, nativeToUi, WrappedI80F48, wrappedI80F48toBigNumber } from "@mercurial-finance/mrgn-common";
 import { AggregatorAccount, SwitchboardProgram } from "@switchboard-xyz/solana.js";
 
 /**
